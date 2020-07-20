@@ -158,7 +158,6 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 	}
 
 	private void gameOver() {
-		
 		//1. stop the timer
 		timer.stop();
 		//2. tell the user their snake is dead
@@ -169,10 +168,10 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		//   reset the snake and the food and start the timer
 		//   else, exit the game
 		if (input.equals("y")) {
-			snake.reset(new Location(WIDTH/2, HEIGHT/2));
+			snake.reset(new Location(WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
 			timer.start();
 		}else if (input.equals("Y")) {
-			snake.reset(new Location(WIDTH/2, HEIGHT/2));
+			snake.reset(new Location(WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
 			timer.start();
 		}else {
 			System.exit(0);
