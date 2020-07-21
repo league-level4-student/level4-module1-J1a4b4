@@ -27,6 +27,10 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 	public static final int WINDOW_SCALE = 50;
 	public static final int WINDOW_WIDTH = WINDOW_SCALE * WIDTH;
 	public static final int WINDOW_HEIGHT = WINDOW_SCALE * HEIGHT;
+	
+	private int highScore = 0;
+	private String highScorer = "";
+	private Difficulty d;
 
 	private JFrame window;
 	private JPanel panel;
@@ -39,7 +43,6 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 
 	public _00_SnakeGame() {
 		snake = new Snake(new Location(WIDTH / 2, HEIGHT / 2));
-
 		window = new JFrame("Snake");
 		panel = new JPanel() {
 			private static final long serialVersionUID = 1L;
@@ -52,8 +55,9 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 				g2.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 				g2.setColor(FOOD_COLOR);
-				g2.drawOval(foodLocation.x * WINDOW_SCALE, foodLocation.y * WINDOW_SCALE, Snake.BODY_SIZE,
-						Snake.BODY_SIZE);
+				if (foodLocation != null) {
+					g2.drawOval(foodLocation.x * WINDOW_SCALE, foodLocation.y * WINDOW_SCALE, Snake.BODY_SIZE, Snake.BODY_SIZE);
+				}
 				snake.draw(g);
 			}
 		};
@@ -88,14 +92,17 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		switch(choice) {
 		case "Expert": {
 			timer.setDelay(100);
+			d = Difficulty.EXPERT;
 			break;
 		}
 		case "Moderate": {
 			timer.setDelay(500);
+			d = Difficulty.MODERATE;
 			break;
 		}
 		case "Beginner": {
 			timer.setDelay(1000);
+			d = Difficulty.BEGINNER;
 			break;
 		}
 		}
@@ -147,7 +154,7 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 	private void setFoodLocation() {
 		//1. Create a new Location object that is set to a random location
 		Random random = new Random();
-		Location location = new Location(random.nextInt(WIDTH), random.nextInt(WIDTH));
+		Location location = new Location(random.nextInt(WIDTH), random.nextInt(HEIGHT));
 		//2. set the foodLocation variable equal to the Location object you just created.
 		//   use the snake's isLocationOnSnake method to make sure you don't put the food on the snake
 		if (snake.isLocationOnSnake(location) == false) {
@@ -162,16 +169,24 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		timer.stop();
 		//2. tell the user their snake is dead
 		JOptionPane.showMessageDialog(null, "GAME OVER");
+		if (snake.score > highScore) {
+			highScore = snake.score;
+			highScorer = JOptionPane.showInputDialog(null, "Please enter your name.");
+		}
+		if (d == Difficulty.BEGINNER) {
+			System.out.println("Beginner: " + highScorer + ": " + highScore);
+		}else if (d == Difficulty.MODERATE) {
+			System.out.println("Moderate: " + highScorer + ": " + highScore);
+		}else if (d == Difficulty.EXPERT) {
+			System.out.println("Expert: " + highScorer + ": " + highScore);
+		}
 		//3. ask them if they want to play again.
 		String input = JOptionPane.showInputDialog(null, "Play again? Y/N");
 		//4. if they want to play again
 		//   reset the snake and the food and start the timer
 		//   else, exit the game
 		if (input.equals("y")) {
-			snake.reset(new Location(WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
-			timer.start();
-		}else if (input.equals("Y")) {
-			snake.reset(new Location(WINDOW_WIDTH/2, WINDOW_HEIGHT/2));
+			snake.reset(new Location(WIDTH/2, HEIGHT/2));
 			timer.start();
 		}else {
 			System.exit(0);
@@ -202,6 +217,7 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		}
 		//4. call panel.repaint();
 		panel.repaint();
-		System.out.println(snake.getHeadLocation().x + ", " + snake.getHeadLocation().y);
+		//System.out.println("APPLE: " + foodLocation.x + ", " + foodLocation.y);
+		//System.out.println("SNAKE: " + snake.getHeadLocation().x + ", " + snake.getHeadLocation().y);
 	}
 }

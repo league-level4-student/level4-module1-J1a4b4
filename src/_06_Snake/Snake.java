@@ -14,6 +14,8 @@ public class Snake {
 	private Direction currentDirection;
 
 	private boolean canMove = true;
+	
+	public int score;
 
 	public Snake(Location location) {
 		snake = new ArrayList<SnakeSegment>();
@@ -26,6 +28,7 @@ public class Snake {
 	public void feed() {
 		//1. add a new SnakeSegment object to the snake
 		snake.add(new SnakeSegment(snake.get(0).getLocation(), BODY_SIZE));
+		score++;
 	}
 
 	public Location getHeadLocation() {
@@ -36,21 +39,23 @@ public class Snake {
 	public void update() {
 		//1. use a switch statement to check on the currentDirection
 		//   of the snake and calculate its next x and y position.
+		int changeX = 0;
+		int changeY = 0;
 		switch(currentDirection) {
 		case UP: {
-			head.setLocation(new Location(head.getLocation().x, head.getLocation().y - BODY_SIZE));
+			changeY = -1;
 			break;
 		}
 		case DOWN: {
-			head.setLocation(new Location(head.getLocation().x, head.getLocation().y + BODY_SIZE));
+			changeY = 1;
 			break;
 		}
 		case LEFT: {
-			head.setLocation(new Location(head.getLocation().x - BODY_SIZE, head.getLocation().y));
+			changeX = -1;
 			break;
 		}
 		case RIGHT: {
-			head.setLocation(new Location(head.getLocation().x + BODY_SIZE, head.getLocation().y));
+			changeX = 1;
 			break;
 		}
 		}
@@ -61,7 +66,7 @@ public class Snake {
 			snake.get(i).setLocation(snake.get(i - 1).getLocation());
 		}
 		//3. set the location of the head to the new location calculated in step 1
-		// Done.
+		head.setLocation(new Location(head.getLocation().x + changeX, head.getLocation().y + changeY));
 		//4. set canMove to true
 		canMove = true;
 	}
@@ -106,22 +111,19 @@ public class Snake {
 		head = new SnakeSegment(loc, BODY_SIZE);
 		//3. add the head to the snake
 		snake.add(head);
+		currentDirection = Direction.RIGHT;
 	}
 
 	public boolean isOutOfBounds() {
 		//1. complete the method so it returns true if the head of the snake is outside of the window
 		//   and false otherwise
 		if (head.getLocation().x < 0) {
-			System.out.println("ERROR CODE: 1");
 			return true;
 		}else if (head.getLocation().y < 0) {
-			System.out.println("ERROR CODE: 10");
 			return true;
-		}else if (head.getLocation().x > _00_SnakeGame.WINDOW_WIDTH) {
-			System.out.println("ERROR CODE: 11");
+		}else if (head.getLocation().x > _00_SnakeGame.WIDTH - 1) {
 			return true;
-		}else if (head.getLocation().y > _00_SnakeGame.WINDOW_HEIGHT) {
-			System.out.println("ERROR CODE: 100");
+		}else if (head.getLocation().y > _00_SnakeGame.HEIGHT - 1) {
 			return true;
 		}
 		return false;
@@ -133,7 +135,7 @@ public class Snake {
 		for (int i = 0; i < snake.size(); i++) {
 			if (!snake.get(i).equals(head)) {
 				if (snake.get(i).getLocation().equals(head.getLocation())) {
-					System.out.println("ERROR CODE: 101");
+					//System.out.println("COLLISION");
 					return true;
 				}
 			}
